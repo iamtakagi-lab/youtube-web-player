@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>youtube-web-player</title>
+    <link rel="stylesheet" href="./style.css" />
+    <meta name="twitter:card" content="summary" />
+    <meta property="og:title" content="youtube-web-player" />
+    <meta property="og:description" content="YouTubeの動画をブラウザ上で再生できるプレイヤー" />
+  </head>
+  <body>
+    <div id="app">
+      <main>
+        <section>
+          <h1>youtube-web-player</h1>
+          <p>YouTubeの動画をブラウザ上で再生できるプレイヤー</p>
+          <div>
+            <label htmlFor="url">動画のURL</label>
+            <input
+              id="url"
+              type="text"
+              placeholder="https://www.youtube.com/watch?v=???"
+            />
+            <button id="play">Play</button>
+            <div>
+              <video id="player" controls></div>
+          </div>
+          </div>
+        </section>
+      </main>
+      <footer>
+        <hr />
+        <p>
+          GitHub:
+          <a href="https://github.com/iamtakagi/youtube-web-player"
+            >https://github.com/iamtakagi/youtube-web-player</a
+          >
+        </p>
+        <p>Author: <a href="https://github.com/iamtakagi">iamtakagi</a></p>
+      </footer>
+    </div>
+  </body>
+  <script src="./script.js"></script>
+</html>
