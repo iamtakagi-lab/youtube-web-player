@@ -7,7 +7,6 @@ const play = () => {
   const url = urlInput.value
   const quality = qualitySelectbox.value
   const streamUrl = `https://ytwp.iamtakagi.net/stream?url=${url}&quality=${quality}`
-  console.log(streamUrl)
   player.src = streamUrl
 }
 
