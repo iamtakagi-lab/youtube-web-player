@@ -1,4 +1,4 @@
-# yotube-web-player
+# youtube-web-player
 
 ## Install
 `docker-compose.yml`
