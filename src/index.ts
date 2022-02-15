@@ -6,17 +6,19 @@ import serve from "koa-static";
 const app = new Koa();
 const router = new Router();
 
-const getYtdlStream = (url: string) => {
-  return ytdl(url);
+type Quality = 'lowest' | 'highest' | 'highestaudio' | 'lowestaudio' | 'highestvideo' | 'lowestvideo' | string | number | string[] | number[];
+
+const getYtdlStream = (url: string, quality: Quality) => {
+  return ytdl(url, {quality});
 };
 
 router.get("/stream", async (ctx, next) => {
   const url = ctx.query.url;
+  const quality = ctx.query.quality;
   if (!url || typeof url != "string") return next();
-  const id = new URL(url).searchParams.get("v");
-  if (!id || typeof id != "string") return next();
+  if (!quality || typeof quality != "string") return next();
   ctx.type = "application/octet-stream";
-  const youtubeStream = getYtdlStream(url);
+  const youtubeStream = getYtdlStream(url, quality);
   ctx.body = youtubeStream;
 });
 
