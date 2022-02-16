@@ -1,4 +1,5 @@
 # youtube-web-player
+サーバサイドからytdlのstreamをpipeで流してフロント側で再生するだけのプレイヤーです。このプレイヤーにシーク機能はありません。
 
 ## Install
 `docker-compose.yml`
