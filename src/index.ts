@@ -30,7 +30,7 @@ app.get("/stream", async (req, res, next) => {
   audioStream.pipe(ffmpegProcess.stdio[3]);
   videoStream.pipe(ffmpegProcess.stdio[4]);
   //エンコード結果をストリーム化
-  const resultStream = ffmpegProcess.stdio[5].pipe(new stream.PassThrough())
+  const resultStream = ffmpegProcess.stdio[5].pipe(new stream.PassThrough({highWaterMark: 1920 * 1080}))
   res.contentType("video/mp4");
   res.attachment(`${info.videoDetails.title}.mp4`);
   resultStream.pipe(res, {end: true})
