@@ -1,5 +1,5 @@
 # youtube-web-player
-サーバサイドでYouTubeのストリームデータを取得したものをffmpegでエンコードした映像データをpipeで流してフロント側で再生出来るだけのプレイヤーです。
+サーバサイドでYouTubeのストリームデータを取得したものをffmpegでエンコードして、その映像データをpipeで流してフロント側で再生出来るだけのプレイヤーです。
 
 ## Install
 `docker-compose.yml`
