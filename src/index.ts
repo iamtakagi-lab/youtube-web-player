@@ -2,6 +2,7 @@ import ytdl from "ytdl-core";
 import Koa from "koa";
 import Router from "@koa/router";
 import serve from "koa-static";
+import path from "path";
 
 const app = new Koa();
 const router = new Router();
@@ -22,7 +23,7 @@ router.get("/stream", async (ctx, next) => {
   ctx.body = youtubeStream;
 });
 
-app.use(serve("./public"));
+app.use(serve(path.resolve(__dirname, '..', 'public')));
 app.use(router.routes());
 app.use(router.middleware());
 app.use(router.allowedMethods());
