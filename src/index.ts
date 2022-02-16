@@ -1,30 +1,40 @@
 import ytdl from "ytdl-core";
-import Koa from "koa";
-import Router from "@koa/router";
-import serve from "koa-static";
 import path from "path";
+import express from "express";
+import { spawn } from "child_process";
+import stream from "stream";
+const app = express();
 
-const app = new Koa();
-const router = new Router();
-
-type Quality = 'lowest' | 'highest' | 'highestaudio' | 'lowestaudio' | 'highestvideo' | 'lowestvideo' | string | number | string[] | number[];
-
-const getYtdlStream = (url: string, quality: Quality) => {
-  return ytdl(url, {quality});
-};
-
-router.get("/stream", async (ctx, next) => {
-  const url = ctx.query.url;
-  const quality = ctx.query.quality;
+app.get("/stream", async (req, res, next) => {
+  const url = req.query.url;
   if (!url || typeof url != "string") return next();
-  if (!quality || typeof quality != "string") return next();
-  ctx.type = "application/octet-stream";
-  const youtubeStream = getYtdlStream(url, quality);
-  ctx.body = youtubeStream;
+  const info = await ytdl.getInfo(url);
+  const audioStream = ytdl.downloadFromInfo(info, { quality: 'highestaudio' });
+  const videoStream = ytdl.downloadFromInfo(info, { quality: 'highestvideo' });
+  //映像と音声を結合するエンコード処理
+  const ffmpegProcess = spawn("ffmpeg", [
+      '-loglevel', '8', '-hide_banner',
+      '-i', 'pipe:3', '-i', 'pipe:4',
+      '-map', '0:a', '-map', '1:v',
+      '-c', 'copy',
+      '-f', 'matroska', 'pipe:5'
+  ], {
+      // Windowsの場合、ポップアップが出ないようにする
+      windowsHide: true,
+      stdio: [
+          'inherit', 'inherit', 'inherit',
+          'pipe', 'pipe', 'pipe'
+      ]
+  }) as any
+  //用意したパイプに流し込む
+  audioStream.pipe(ffmpegProcess.stdio[3]);
+  videoStream.pipe(ffmpegProcess.stdio[4]);
+  //エンコード結果をストリーム化
+  const resultStream = ffmpegProcess.stdio[5].pipe(new stream.PassThrough())
+  res.contentType("video/mp4");
+  res.attachment(`${info.videoDetails.title}.mp4`);
+  resultStream.pipe(res, {end: true})
 });
 
-app.use(serve(path.resolve(__dirname, '..', 'public')));
-app.use(router.routes());
-app.use(router.middleware());
-app.use(router.allowedMethods());
+app.use(express.static(path.resolve(__dirname, "..", "public")));
 app.listen(process.env.PORT || 3030);
