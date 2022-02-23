@@ -34,9 +34,7 @@ app.get("/stream", async (req, res, next) => {
   res.contentType("video/mp4");
   res.attachment(`${info.videoDetails.title}.mp4`);
   resultStream.pipe(res, {end: true})
-  res.on("close",function(){
-    ffmpeg.kill();
-  })
+  res.on("close", () => ffmpeg.kill())
 });
 
 app.use(express.static(path.resolve(__dirname, "..", "public")));
